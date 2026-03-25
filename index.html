@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitecturas de Infraestructura — Referencia Técnica</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f4f1eb;
+    --accent: #c0392b;
+    --accent2: #1a3c5e;
+    --muted: #7a7a72;
+    --border: #d4cfc6;
+    --code-bg: #1e1e1e;
+    --slide-max: 900px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #e8e4dc;
+    color: var(--ink);
+    padding: 40px 20px 80px;
+    min-height: 100vh;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    max-width: var(--slide-max);
+    margin: 0 auto 60px;
+    background: var(--accent2);
+    border-radius: 4px;
+    padding: 70px 60px 60px;
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+  .cover-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 24px;
+  }
+  .cover h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .cover-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.65);
+    max-width: 480px;
+    line-height: 1.6;
+  }
+  .cover-index {
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .cover-index span {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 5px 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 2px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 1px;
+  }
+
+  /* ── SLIDE ── */
+  .slide {
+    max-width: var(--slide-max);
+    margin: 0 auto 48px;
+    background: var(--paper);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  .slide-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 28px 40px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .slide-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    flex-shrink: 0;
+  }
+  .slide-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .slide-tag {
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .tag-mono  { background: #e8f0e0; color: #2d5a1b; }
+  .tag-micro { background: #fde8e8; color: #7a1a1a; }
+  .tag-web   { background: #e8eef8; color: #1a3060; }
+  .tag-mobile{ background: #f0e8f8; color: #3d1a60; }
+  .tag-sless { background: #fff3e0; color: #7a4000; }
+  .tag-cont  { background: #e0f4f8; color: #004d66; }
+
+  .slide-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .col-left {
+    padding: 28px 32px 28px 40px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .col-right {
+    padding: 28px 40px 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .section-text {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: #2a2a2a;
+    font-weight: 300;
+  }
+
+  ul.bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  ul.bullets li {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #2a2a2a;
+    padding-left: 14px;
+    position: relative;
+    font-weight: 300;
+  }
+  ul.bullets li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+  }
+
+  .use-case-box {
+    background: var(--accent2);
+    color: #fff;
+    border-radius: 3px;
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.55;
+    font-weight: 300;
+  }
+  .use-case-box .section-label { color: rgba(255,255,255,0.5); }
+
+  /* ── MERMAID ── */
+  .mermaid-wrap {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 16px 12px;
+    overflow-x: auto;
+  }
+  .mermaid-wrap .mermaid {
+    text-align: center;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 680px) {
+    .slide-body { grid-template-columns: 1fr; }
+    .col-left { border-right: none; border-bottom: 1px solid var(--border); padding: 24px; }
+    .col-right { padding: 24px; }
+    .slide-header { padding: 20px 24px 16px; }
+    .cover { padding: 48px 28px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════ COVER ══════════ -->
+<div class="cover">
+  <p class="cover-label">Referencia Técnica · Infraestructura</p>
+  <h1>Arquitecturas de<br>Aplicaciones Modernas</h1>
+  <p class="cover-sub">Guía de patrones de infraestructura: componentes, comunicación y casos de uso para diseño y selección arquitectónica.</p>
+  <div class="cover-index">
+    <span>01 · Monolítica</span>
+    <span>02 · Microservicios</span>
+    <span>03 · Web 3-Tier / N-Tier</span>
+    <span>04 · Mobile / BFF</span>
+    <span>05 · Serverless</span>
+    <span>06 · Contenedores</span>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 01 — MONOLÍTICA ══════════ -->
+<div class="slide">
+  <div class="slide-header">
+    <span class="slide-num">01 —</span>
+    <h2 class="slide-title">Arquitectura Monolítica</h2>
+    <span class="slide-tag tag-mono">Monolítica</span>
+  </div>
+  <div class="slide-body">
+    <div class="col-left">
+      <div>
+        <p class="section-label">Descripción</p>
+        <p class="section-text">Aplicación desplegada como una unidad indivisible. Toda la lógica (presentación, negocio y datos) reside en un único proceso. Simple de desarrollar y operar en fases tempranas; costosa de escalar de forma granular.</p>
+      </div>
+      <div>
+        <p class="section-label">Componentes Clave</p>
+        <ul class="bullets">
+          <li>UI Layer — renderizado / controladores MVC</li>
+          <li>Business Logic Layer — servicios y reglas de negocio</li>
+          <li>Data Access Layer — ORM / queries directas</li>
+          <li>Base de datos relacional única (PostgreSQL, MySQL)</li>
+          <li>Servidor de aplicación único (Tomcat, Gunicorn)</li>
+        </ul>
+      </div>
+      <div>
+        <p class="section-label">Flujo de Comunicación</p>
+        <p class="section-text">El cliente realiza peticiones HTTP al servidor. Internamente, la solicitud transita en memoria entre capas (controlador → servicio → repositorio) sin red intermedia. El acceso a datos es una llamada directa al motor de base de datos.</p>
+      </div>
+      <div class="use-case-box">
+        <p class="section-label">Caso de Uso Típico</p>
+        MVPs, herramientas internas, sistemas de bajo tráfico o equipos pequeños que priorizan velocidad de desarrollo sobre elasticidad.
+      </div>
+    </div>
+    <div class="col-right">
+      <p class="section-label">Diagrama de Arquitectura</p>
+      <div class="mermaid-wrap">
+        <div class="mermaid">
+graph TD
+  C([Cliente / Browser]) -->|HTTP| APP
+  subgraph APP["Servidor de Aplicación"]
+    direction TB
+    UI[UI / Controllers]
+    BL[Business Logic]
+    DA[Data Access Layer]
+    UI --> BL --> DA
+  end
+  DA -->|SQL| DB[(Base de Datos)]
+  style APP fill:#f0ece4,stroke:#c0b8a8
+  style DB fill:#dde8f5,stroke:#90a8c8
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 02 — MICROSERVICIOS ══════════ -->
+<div class="slide">
+  <div class="slide-header">
+    <span class="slide-num">02 —</span>
+    <h2 class="slide-title">Arquitectura de Microservicios</h2>
+    <span class="slide-tag tag-micro">Microservicios</span>
+  </div>
+  <div class="slide-body">
+    <div class="col-left">
+      <div>
+        <p class="section-label">Descripción</p>
+        <p class="section-text">Sistema compuesto por servicios pequeños, desplegables y escalables de forma independiente. Cada servicio encapsula una capacidad de negocio, posee su propia base de datos y expone una API bien definida.</p>
+      </div>
+      <div>
+        <p class="section-label">Componentes Clave</p>
+        <ul class="bullets">
+          <li>API Gateway — punto de entrada único, enrutamiento y auth</li>
+          <li>Servicios de dominio — Users, Orders, Payments, Inventory</li>
+          <li>Message Broker — Kafka / RabbitMQ (comunicación async)</li>
+          <li>Service Registry — Consul / Eureka (descubrimiento)</li>
+          <li>Base de datos por servicio (polglot persistence)</li>
+        </ul>
+      </div>
+      <div>
+        <p class="section-label">Flujo de Comunicación</p>
+        <p class="section-text">El API Gateway enruta peticiones síncronas (REST/gRPC) a los servicios. Las operaciones de larga duración usan eventos sobre un broker (pub/sub). Cada servicio lee y escribe exclusivamente su propia base de datos.</p>
+      </div>
+      <div class="use-case-box">
+        <p class="section-label">Caso de Uso Típico</p>
+        Plataformas de e-commerce, fintechs y SaaS con equipos independientes, alta frecuencia de despliegue y necesidad de escalar dominios específicos.
+      </div>
+    </div>
+    <div class="col-right">
+      <p class="section-label">Diagrama de Arquitectura</p>
+      <div class="mermaid-wrap">
+        <div class="mermaid">
+graph TD
+  C([Cliente]) -->|HTTPS| GW[API Gateway]
+  GW -->|REST| SU[Users Service]
+  GW -->|REST| SO[Orders Service]
+  GW -->|REST| SP[Payments Service]
+  SU --- DB1[(DB Users)]
+  SO --- DB2[(DB Orders)]
+  SP --- DB3[(DB Payments)]
+  SO -->|Evento| MB[[Message Broker]]
+  MB -->|Suscripción| SP
+  style GW fill:#fde8e8,stroke:#d08080
+  style MB fill:#fff3e0,stroke:#d0a060
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 03 — WEB 3-TIER / N-TIER ══════════ -->
+<div class="slide">
+  <div class="slide-header">
+    <span class="slide-num">03 —</span>
+    <h2 class="slide-title">Aplicación Web — 3-Tier / N-Tier</h2>
+    <span class="slide-tag tag-web">Web</span>
+  </div>
+  <div class="slide-body">
+    <div class="col-left">
+      <div>
+        <p class="section-label">Descripción</p>
+        <p class="section-text">Separación física y lógica de la aplicación en capas horizontales: presentación, lógica de negocio y datos. N-Tier extiende el modelo añadiendo capas intermedias (caché, integración, seguridad) para mayor escalabilidad y separación de responsabilidades.</p>
+      </div>
+      <div>
+        <p class="section-label">Componentes Clave</p>
+        <ul class="bullets">
+          <li>Tier 1 — CDN + Web Server (Nginx, static assets)</li>
+          <li>Tier 2 — App Server (REST API, lógica de negocio)</li>
+          <li>Tier 3 — Base de datos (RDBMS + réplicas lectura)</li>
+          <li>Caché distribuida — Redis / Memcached</li>
+          <li>Load Balancer — distribución horizontal de carga</li>
+        </ul>
+      </div>
+      <div>
+        <p class="section-label">Flujo de Comunicación</p>
+        <p class="section-text">El cliente consume assets desde el CDN y envía peticiones al Load Balancer, que distribuye tráfico entre App Servers. La capa de aplicación consulta caché antes de acceder a la base de datos; escrituras van al nodo primario, lecturas a réplicas.</p>
+      </div>
+      <div class="use-case-box">
+        <p class="section-label">Caso de Uso Típico</p>
+        Portales corporativos, e-commerce tradicional, sistemas ERP web y aplicaciones con patrones de tráfico predecibles y separación clara de equipos por capa.
+      </div>
+    </div>
+    <div class="col-right">
+      <p class="section-label">Diagrama de Arquitectura</p>
+      <div class="mermaid-wrap">
+        <div class="mermaid">
+graph TD
+  C([Cliente]) --> CDN[CDN]
+  C --> LB[Load Balancer]
+  LB --> AS1[App Server 1]
+  LB --> AS2[App Server 2]
+  AS1 & AS2 --> CA[(Cache Redis)]
+  AS1 & AS2 --> DBP[(DB Primary)]
+  DBP --> DBR[(DB Replica)]
+  style LB fill:#e8eef8,stroke:#90a0c8
+  style CDN fill:#f0f4e8,stroke:#88a060
+  style CA fill:#fff3e0,stroke:#d0a060
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 04 — MOBILE / BFF ══════════ -->
+<div class="slide">
+  <div class="slide-header">
+    <span class="slide-num">04 —</span>
+    <h2 class="slide-title">Aplicación Móvil — Cliente-Servidor / BFF</h2>
+    <span class="slide-tag tag-mobile">Mobile</span>
+  </div>
+  <div class="slide-body">
+    <div class="col-left">
+      <div>
+        <p class="section-label">Descripción</p>
+        <p class="section-text">El patrón Backend for Frontend (BFF) introduce una capa intermediaria específica por canal (iOS, Android, Web) que agrega, transforma y optimiza datos de múltiples servicios backend, reduciendo latencia y over-fetching en dispositivos móviles.</p>
+      </div>
+      <div>
+        <p class="section-label">Componentes Clave</p>
+        <ul class="bullets">
+          <li>Clientes nativos — iOS (Swift), Android (Kotlin)</li>
+          <li>BFF por plataforma — API tailored por canal</li>
+          <li>Auth Service — OAuth 2.0 / JWT</li>
+          <li>Servicios backend — dominio de negocio compartidos</li>
+          <li>Push Notification Gateway — APNs / FCM</li>
+        </ul>
+      </div>
+      <div>
+        <p class="section-label">Flujo de Comunicación</p>
+        <p class="section-text">El cliente móvil se autentica vía OAuth y llama a su BFF dedicado. El BFF orquesta llamadas a múltiples servicios internos (REST/gRPC), agrega la respuesta y la devuelve optimizada para el formato y ancho de banda del canal móvil.</p>
+      </div>
+      <div class="use-case-box">
+        <p class="section-label">Caso de Uso Típico</p>
+        Apps de banca móvil, marketplaces con app nativa y web, y cualquier producto con múltiples clientes que consumen backends compartidos con distintos requisitos de datos.
+      </div>
+    </div>
+    <div class="col-right">
+      <p class="section-label">Diagrama de Arquitectura</p>
+      <div class="mermaid-wrap">
+        <div class="mermaid">
+graph TD
+  iOS([iOS App]) --> BFFI[BFF iOS]
+  AND([Android App]) --> BFFA[BFF Android]
+  WEB([Web App]) --> BFFW[BFF Web]
+  BFFI & BFFA & BFFW --> AUTH[Auth Service]
+  BFFI & BFFA & BFFW --> SVC1[User Service]
+  BFFI & BFFA & BFFW --> SVC2[Content Service]
+  SVC1 & SVC2 --> DB[(Backend DB)]
+  style BFFI fill:#f0e8f8,stroke:#a080c8
+  style BFFA fill:#f0e8f8,stroke:#a080c8
+  style BFFW fill:#f0e8f8,stroke:#a080c8
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 05 — SERVERLESS ══════════ -->
+<div class="slide">
+  <div class="slide-header">
+    <span class="slide-num">05 —</span>
+    <h2 class="slide-title">Arquitectura Serverless</h2>
+    <span class="slide-tag tag-sless">Serverless</span>
+  </div>
+  <div class="slide-body">
+    <div class="col-left">
+      <div>
+        <p class="section-label">Descripción</p>
+        <p class="section-text">Ejecución de lógica de negocio en funciones efímeras (FaaS) gestionadas por el proveedor cloud. No requiere provisioning de servidores; la infraestructura escala automáticamente a cero. El modelo de costo es por invocación y tiempo de ejecución.</p>
+      </div>
+      <div>
+        <p class="section-label">Componentes Clave</p>
+        <ul class="bullets">
+          <li>API Gateway — enrutamiento HTTP a funciones</li>
+          <li>Functions — AWS Lambda / Azure Functions / GCF</li>
+          <li>Event Sources — S3 triggers, SQS, EventBridge</li>
+          <li>Managed Storage — DynamoDB, S3, Firestore</li>
+          <li>IAM — permisos por función (least privilege)</li>
+        </ul>
+      </div>
+      <div>
+        <p class="section-label">Flujo de Comunicación</p>
+        <p class="section-text">Un evento (HTTP, mensaje en cola, cambio en storage) invoca una función específica. La función se ejecuta en un contenedor efímero gestionado por el cloud provider, accede a servicios gestionados y termina. No existe estado en-proceso entre invocaciones.</p>
+      </div>
+      <div class="use-case-box">
+        <p class="section-label">Caso de Uso Típico</p>
+        Procesamiento de eventos asíncronos, webhooks, ETL ligero, APIs con tráfico altamente variable y backends de bajo volumen que requieren coste operativo mínimo.
+      </div>
+    </div>
+    <div class="col-right">
+      <p class="section-label">Diagrama de Arquitectura</p>
+      <div class="mermaid-wrap">
+        <div class="mermaid">
+graph TD
+  C([Cliente]) -->|HTTP| GW[API Gateway]
+  GW --> F1[fn: Auth]
+  GW --> F2[fn: ProcessOrder]
+  GW --> F3[fn: Notification]
+  EV([Event Source S3/SQS]) --> F2
+  F1 --> DB1[(DynamoDB)]
+  F2 --> DB1
+  F2 --> Q[[SQS Queue]]
+  Q --> F3
+  F3 --> NS[SNS / Email]
+  style GW fill:#fff3e0,stroke:#d0a060
+  style F1 fill:#ffe8c0,stroke:#c09040
+  style F2 fill:#ffe8c0,stroke:#c09040
+  style F3 fill:#ffe8c0,stroke:#c09040
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 06 — CONTENEDORES ══════════ -->
+<div class="slide">
+  <div class="slide-header">
+    <span class="slide-num">06 —</span>
+    <h2 class="slide-title">Arquitectura Basada en Contenedores</h2>
+    <span class="slide-tag tag-cont">Docker / Kubernetes</span>
+  </div>
+  <div class="slide-body">
+    <div class="col-left">
+      <div>
+        <p class="section-label">Descripción</p>
+        <p class="section-text">Empaquetado de aplicaciones en imágenes OCI ejecutadas como contenedores sobre un orquestador (Kubernetes). Permite portabilidad entre entornos, escalado declarativo, auto-healing y gestión de configuración estandarizada.</p>
+      </div>
+      <div>
+        <p class="section-label">Componentes Clave</p>
+        <ul class="bullets">
+          <li>Container Registry — almacén de imágenes (ECR, GCR)</li>
+          <li>Kubernetes Control Plane — API Server, Scheduler, etcd</li>
+          <li>Worker Nodes — Pods con uno o más contenedores</li>
+          <li>Ingress Controller — enrutamiento HTTP externo</li>
+          <li>ConfigMaps / Secrets — gestión de configuración</li>
+          <li>Persistent Volumes — storage stateful (bases de datos)</li>
+        </ul>
+      </div>
+      <div>
+        <p class="section-label">Flujo de Comunicación</p>
+        <p class="section-text">El tráfico externo llega al Ingress Controller, que enruta a Services (ClusterIP/LB). Los Services balancean carga entre Pods. El orquestador monitorea el estado deseado y reprograma Pods caídos automáticamente en nodos disponibles.</p>
+      </div>
+      <div class="use-case-box">
+        <p class="section-label">Caso de Uso Típico</p>
+        Microservicios en producción, plataformas multi-tenant, pipelines CI/CD con entornos reproducibles y aplicaciones que requieren escalado horizontal automatizado y alta disponibilidad.
+      </div>
+    </div>
+    <div class="col-right">
+      <p class="section-label">Diagrama de Arquitectura</p>
+      <div class="mermaid-wrap">
+        <div class="mermaid">
+graph TD
+  C([Cliente]) --> ING[Ingress Controller]
+  ING --> SVC1[Service: Frontend]
+  ING --> SVC2[Service: API]
+  SVC1 --> P1[Pod: Frontend ×2]
+  SVC2 --> P2[Pod: Backend ×3]
+  P2 --> SVC3[Service: DB]
+  SVC3 --> PV[(PersistentVolume\nPostgres)]
+  CP[Control Plane] -. gestiona .-> P1
+  CP -. gestiona .-> P2
+  REG[(Container Registry)] -. imagen .-> P1 & P2
+  style ING fill:#e0f4f8,stroke:#60a8c0
+  style CP fill:#d8eef8,stroke:#70a0c0
+  style REG fill:#e8f4e0,stroke:#70a870
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer style="max-width:900px;margin:0 auto;padding:28px 0 0;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #c8c4bc;">
+  <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#7a7a72;">Arquitecturas de Infraestructura</span>
+  <span style="font-family:'DM Serif Display',serif;font-size:16px;color:#1a3c5e;letter-spacing:1px;">O. Pinzon</span>
+</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#e8eef8',
+      primaryTextColor: '#0d0d0d',
+      primaryBorderColor: '#90a0c8',
+      lineColor: '#7a7a72',
+      secondaryColor: '#f4f1eb',
+      tertiaryColor: '#fff',
+      fontSize: '13px',
+      fontFamily: 'DM Mono, monospace'
+    }
+  });
+</script>
+</body>
+</html>
